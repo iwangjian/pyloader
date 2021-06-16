@@ -13,11 +13,11 @@ class Dataset(Generic[T_co]):
     it. All subclasses should overwrite :meth:`batch_encode`
     """
 
-    def batch_encode(self, batch_data: List[Dict]) -> Dict[str, List]:
+    def batch_encode(self, batch_data: Dict[str, List]) -> Dict[str, List]:
         """
         Encode batch data from raw format to numeric format.
         Args: 
-            batch_data (List[Dict]): A list of dicts
+            batch_data (Dict[str, List]): A dict of lists
         Returns:
             A dict of lists
         """
@@ -56,33 +56,25 @@ class TextDataset(Dataset):
         """
         Encode batch data from raw format to numeric format.
         Args: 
-            batch_data (List[Dict]): A list of dicts
+            batch_data (Dict[str, List]): A dict of lists
         Returns:
             batch (Dict[str, List]]): A dict of lists
         """
-        input_ids = []
-        attention_mask = []
-        labels = []
-        for sample in batch_data:
-            text = sample["input_text"]
-            label = sample["label"]
-            if self.stoi:
-                text_ids = [self.stoi.get(w, PAD_IDX) for w in text.split()]
+        batch = {}
+        for k, data_list in batch_data.items():
+            if k == "label":
+                batch[k] = data_list
             else:
-                text_ids = [int(w) for w in text.split()]
-            text_masks = [1] * len(text_ids)
-            if len(text_ids) > self.max_seq_len:
-                input_id = text_ids[:self.max_seq_len]
-                input_mask = text_masks[:self.max_seq_len]
-            else:
-                input_id = text_ids + [PAD_IDX] * (self.max_seq_len-len(text_ids))
-                input_mask = text_masks + [0] * (self.max_seq_len-len(text_ids))
-            input_ids.append(input_id)
-            attention_mask.append(input_mask)
-            labels.append(label)
-        batch = {
-            "input_ids": input_ids, 
-            "attention_mask": attention_mask,
-            "label": labels
-        }
+                input_ids = []
+                for text in data_list:
+                    if self.stoi:
+                        text_ids = [self.stoi.get(w, PAD_IDX) for w in text.split()]
+                    else:
+                        text_ids = [int(w) for w in text.split()]
+                    if len(text_ids) > self.max_seq_len:
+                        input_id = text_ids[:self.max_seq_len]
+                    else:
+                        input_id = text_ids + [PAD_IDX] * (self.max_seq_len-len(text_ids))
+                    input_ids.append(input_id)
+                batch[k] = input_ids
         return batch

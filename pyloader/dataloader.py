@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import sys
 import random
 import logging
 import time
@@ -11,9 +12,14 @@ from .datareader import DataReader
 from .dataset import Dataset
 from .datacollator import DataCollator
 
-MAX_QUEUE_SIZE = 20
+MAX_QUEUE_SIZE = 10
 T_co = TypeVar('T_co', covariant=True)
 
+logging.basicConfig(
+    level = logging.INFO,
+    format = "%(asctime)s [%(levelname)s] %(message)s",
+    handlers = [logging.StreamHandler(sys.stdout)]
+)
 
 class DataLoader(Generic[T_co]):
     """
@@ -31,12 +37,12 @@ class DataLoader(Generic[T_co]):
     """
 
     def __init__(self, 
-                datareader: DataReader[T_co],
-                dataset: Dataset[T_co],
-                datacollator: DataCollator[T_co],
+                datareader: DataReader,
+                dataset: Dataset,
+                datacollator: DataCollator,
                 root_dir: str, 
                 num_epoch: int = 1, 
-                max_queue_size: int = 20, 
+                max_queue_size: int = 10, 
                 shuffle: bool = False, 
                 random_seed: int = 42):
 
@@ -80,6 +86,9 @@ class DataLoader(Generic[T_co]):
         self.watch_thread = Thread(target=self._monitor_threads)
         self.watch_thread.setDaemon(True)
         self.watch_thread.start()
+
+        # Initialize reader queue to be full
+        self._init_queue()
     
     def _check_files(self, root_dir):
         for root, dirs, files in os.walk(root_dir):
@@ -89,6 +98,13 @@ class DataLoader(Generic[T_co]):
                     self.file_chunk_list.append(fpath)
                 else:
                     raise FileExistsError("File `{}` not exist!".format(fpath))
+    
+    def _init_queue(self):
+        while True:
+            if self.reader_queue_size < self.max_queue_size:
+                time.sleep(2)
+            else:
+                break
 
     def _batch_generator(self):
         """Batch data iterator."""
@@ -106,6 +122,7 @@ class DataLoader(Generic[T_co]):
     def _reader_generator(self):
         """Datareader iterator."""
         for epoch in range(1, self.num_epoch + 1):
+            logging.info("Epoch: {}".format(epoch))
             self.current_epoch = epoch
             if self.shuffle:
                 random.shuffle(self.file_chunk_list)
