@@ -43,13 +43,13 @@ python setup.py install
 ## Quick Usage
 PyLoader aims to make it flexible and easy-to-extend for loading big datasets in various tasks under the limitation of machine resource. There are several steps for a quick start. 
 
-Step 1: Suppose the original datasets are too big that you cannot load them once for disk into memory, you should first split the original dataset into amount of chunked files. The size of each chunked file is determined by the machine and your design.
+**Step 1**: Suppose the original datasets are too big that you cannot load them once from disk into memory, you should first split the original datasets into an amount of chunked files. The size of each chunked file is determined by the machine and your design.
 
-Step 2: Inherit the class `DataReader` and implement the method `read_file()`, which defines how to read a chunked file from disk.
+**Step 2**: Inherit the class `DataReader` and implement the method `read_file()`, which defines how to read a chunked file from disk.
 
-Step 3: Inherit the class `Dataset` and implement the method `batch_encode()`, which defines how to enocde data from raw format to numeric format (e.g., raw data is in the format of text).
+**Step 3**: Inherit the class `Dataset` and implement the method `batch_encode()`, which defines how to encode data from raw format to numeric format (e.g., raw data is in the format of text).
 
-Step 4: Inherit the class `DataCollator` and implement the method `collate_batch()`, which defines how to collate batches of data to tensors for model training.
+**Step 4**: Inherit the class `DataCollator` and implement the method `collate_batch()`, which defines how to collate batches of data to tensors for model training.
 
 The following code snippets show a simple workflow for using PyLoader.
 ```python
