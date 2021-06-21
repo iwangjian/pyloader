@@ -4,7 +4,8 @@ from pyloader import Dataset
 from pyloader import DataCollator
 from pyloader import DataLoader
 import json
-import torch
+import numpy as np
+import tensorflow as tf
 
 # Step 1: Inherit the class `DataReader` and implement the method `read_file()`
 class JsonLineDataReader(DataReader):
@@ -99,8 +100,8 @@ class TextDataset(Dataset):
 
 
 # Step 3: Inherit the class `DataCollator` and implement the method `collate_batch()`
-class PyDataCollator(DataCollator):
-    """Simple PyTorch-based data collator."""
+class TFDataCollator(DataCollator):
+    """Simple Tensforflow-based data collator."""
     
     def collate_batch(self, features):
         # Special handling for labels.
@@ -108,9 +109,10 @@ class PyDataCollator(DataCollator):
         if "label" in features and features["label"] is not None:
             first = features["label"][0]
             if type(first) is int:
-                labels = torch.tensor([f for f in features["label"]], dtype=torch.long)
+                labels_npy = np.array([f for f in features["label"]], dtype=np.int)
             else:
-                labels = torch.tensor([f for f in features["label"]], dtype=torch.float)
+                labels_npy = np.array([f for f in features["label"]], dtype=np.float)
+            labels = tf.convert_to_tensor(labels_npy)
             batch = {"label": labels}
         else:
             batch = {}
@@ -118,7 +120,8 @@ class PyDataCollator(DataCollator):
         # Handling of all other possible attributes
         for k, v in features.items():
             if k not in ("label") and v is not None:
-                batch[k] = torch.tensor([f for f in features[k]], dtype=torch.long)
+                batch_npy = np.array([f for f in features[k]], dtype=np.int)
+                batch[k] = tf.convert_to_tensor(batch_npy)
         return batch
 
 
@@ -127,8 +130,7 @@ def main_test():
     vocab_file = "data/vocab.txt"
     datareader = JsonLineDataReader(batch_size=16, shuffle=True)
     dataset = TextDataset(vocab_file, max_seq_len=60, max_vocab_size=30000)
-    datacollator = PyDataCollator()
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    datacollator = TFDataCollator()
 
     # define a DataLoader
     train_loader = DataLoader(
@@ -137,14 +139,14 @@ def main_test():
     )
 
     # iteratively load data for training
-    for batch_step, inputs in enumerate(train_loader):
-        for k, v in inputs.items():
-            inputs[k] = v.to(device)
-            # show batch data
-            print("step: {}\t{}:\n{}".format(batch_step, k, inputs[k]))
+    with tf.device("GPU:0" if tf.test.is_gpu_available() else "CPU"):
+        for batch_step, inputs in enumerate(train_loader):
+            for k, v in inputs.items():
+                # show batch data
+                print("step: {}\t{}:\n{}".format(batch_step, k, inputs[k]))
             
-            # define your code
-            # ...
+                # define your code
+                # ...
 
 
 if __name__ == "__main__":
