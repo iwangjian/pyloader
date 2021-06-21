@@ -17,18 +17,19 @@ from setuptools import find_packages
 setup(
     name="pyloader",
     version="0.5.0",
-    description="PyLoader",
-    long_description=open("README.md", "r", encoding="utf-8").read(),
-    long_description_content_type="text/markdown",
-    keywords="deep learning",
-    license="Apache",
+    description="An asynchronous Python dataloader for loading big datasets with limited memory.",
+    keywords=[
+        "deep learning",
+        "data loader",
+    ],
+    license="Apache 2.0",
     author="iwangjian",
     author_email="jwanglvy@gmail.com",
     url="https://github.com/iwangjian/pyloader",
-    package_dir={"": "pyloader"},
-    packages=find_packages("pyloader"),
     python_requires=">=3.6.0",
-    install_requires=["numpy>=1.14.5"],
+    install_requires=[
+        "numpy",
+    ],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
@@ -42,4 +43,7 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
     ],
+    package_data={"pyloader": ["VERSION"]},
+    packages=find_packages(),
+    zip_safe=False,
 )
