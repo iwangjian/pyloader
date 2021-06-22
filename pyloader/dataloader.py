@@ -54,7 +54,7 @@ class DataLoader(Generic[T_co]):
             raise TypeError("datacollator should be a valid `pyloader.DataCollator` type!")
         
         self.file_chunk_list = []
-        self._check_files(root_dir)
+        self._check_files(root_dir)   # this will update `self.file_chunk_list`
 
         self.datareader = datareader
         self.dataset = dataset
@@ -67,6 +67,9 @@ class DataLoader(Generic[T_co]):
             self.max_queue_size = max_queue_size
         else:
             raise Warning("max_queue_size is suggested to be in the range (0, 1000). Set as default to {}.".format(self.max_queue_size))
+        # if the number of file chunks <  self.max_queue_size
+        # then self.max_queue_size should be set as the number of file chunks
+        self.max_queue_size = min(self.max_queue_size, len(self.file_chunk_list))
         
         self.shuffle = shuffle
         self.random_seed = random_seed
