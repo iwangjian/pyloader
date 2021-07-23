@@ -21,7 +21,7 @@
 [![Star][stars-image]][stars-url]
 [![Fork][forks-image]][forks-url]
 
-😀 PyLoader: An asynchronous Python dataloader for loading big datasets with limited memory, supporting PyTorch and TensorFlow 2.x.
+🐳 PyLoader: An asynchronous Python dataloader for loading big datasets, supporting PyTorch and TensorFlow 2.x.
 
 
 Have you ever encountered the problem that it's hard to load big datasets for training deep learning models in a single machine, especially when the datasets are too big (e.g., `N` GB / TB, or even larger) while the machine's memory is limited? **PyLoader** is an easy-to-use toolkit for loading big datasets with limited memory using an asynchronous manner. It provides flexible interfaces to define your own ways to read data and customize data format. Since PyLoader is purely based on Python, it can be used under PyTorch and Tensorflow 2.x. The architecture of PyLoader is shown in the following figure.
