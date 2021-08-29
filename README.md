@@ -24,7 +24,7 @@
 🐳 PyLoader: An asynchronous Python dataloader for loading big datasets, supporting PyTorch and TensorFlow 2.x.
 
 
-Have you ever encountered the problem that it's hard to load big datasets for training deep learning models in a single machine, especially when the datasets are too big (e.g., `N` GB / TB, or even larger) while the machine's memory is limited? **PyLoader** is an easy-to-use toolkit for loading big datasets with limited memory using an asynchronous manner. It provides flexible interfaces to define your own ways to read data and customize data format. Since PyLoader is purely based on Python, it can be used under PyTorch and Tensorflow 2.x. The architecture of PyLoader is shown in the following figure.
+Have you ever encountered the problem that it's hard to load big datasets for training deep learning models in a single machine, especially when the datasets are too big (e.g., hundreds of GB, or even larger) while the machine's memory is limited? **PyLoader** is an easy-to-use toolkit for loading big datasets with limited memory using an asynchronous manner. It provides flexible interfaces to define your own ways to read data and customize data format. Since PyLoader is purely based on Python, it can be used under PyTorch and Tensorflow 2.x. The architecture of PyLoader is shown in the following figure.
 
 <p align="center">
     <img src="img/pyloader.png" width="95%" />
@@ -33,7 +33,7 @@ Have you ever encountered the problem that it's hard to load big datasets for tr
 </p>
 
 ## Installation
-Currently, users can install PyLoader via source code:
+Currently, please install PyLoader via the following command:
 ```
 git clone https://github.com/iwangjian/pyloader.git
 cd pyloader
@@ -41,7 +41,7 @@ python setup.py install
 ```
 
 ## Quick Usage
-PyLoader aims to make it flexible and easy-to-extend for loading big datasets in various tasks under the limitation of machine resource. There are several steps for a quick start. 
+PyLoader aims to make it flexible and easy-to-extend for loading big datasets in various tasks under the limitation of machine resource. There are several steps required for a quick start. 
 
 **Step 1**: Suppose the original datasets are too big that you cannot load them once from disk into memory, you should first split the original datasets into an amount of chunked files. The size of each chunked file is determined by the machine and your design.
 
@@ -126,7 +126,7 @@ for batch_step, inputs in enumerate(train_loader):
 ```
 
 ## Examples
-To better understand how to use PyLoader flexibly, we provide some examples using PyTorch and Tensorflow 2.x. For usage under PyTorch, please refer to [`tests/test_pyloader_py.py`](https://github.com/iwangjian/pyloader/blob/main/tests/test_pyloader_py.py), for usage under Tensorflow 2.x, please refer to [`tests/test_pyloader_tf.py`](https://github.com/iwangjian/pyloader/blob/main/tests/test_pyloader_tf.py). The example data can be downloaded from [Google Drive](https://drive.google.com/file/d/1zqCq1OEewRAFWxNTGG1fjozgIsjS1XuO/view?usp=sharing) or [Baidu Netdisk](https://pan.baidu.com/s/1RvUEgQbRvHrOW5pbTVUBCw) (code: jky8).
+To better understand how to use PyLoader flexibly, we provide some examples using PyTorch and Tensorflow 2.x. For usage under PyTorch, please refer to [`tests/test_pyloader_py.py`](https://github.com/iwangjian/pyloader/blob/main/tests/test_pyloader_py.py). For usage under Tensorflow 2.x, please refer to [`tests/test_pyloader_tf.py`](https://github.com/iwangjian/pyloader/blob/main/tests/test_pyloader_tf.py). The example data can be downloaded from [Google Drive](https://drive.google.com/file/d/1zqCq1OEewRAFWxNTGG1fjozgIsjS1XuO/view?usp=sharing) or [Baidu Netdisk](https://pan.baidu.com/s/1RvUEgQbRvHrOW5pbTVUBCw) (code: jky8).
 
 ## Contributing
 We welcome all contributions from bug fixes to new features and extensions.
